@@ -1,0 +1,68 @@
+# outline for JDP design project 2
+
+# Libraries:
+Install required libraries for 
+    - ultrasound sensor
+    - OLED display
+    - GPIO
+    - Temperature sensors
+    - uART / USART
+    - PWM / Motor? 
+
+
+######## Circuit diagram #############
+- dc motor (power transistor, 1 digital pin)
+- OLED display (2 analog pins)
+- 7 segment led (5 digital pins)
+- TMP36 (1 digital pin)
+- ultrasound sensor (2 digital per (4 digital pins))
+
+void setup(){
+    init_usart()    # initialize usart for debugging
+    init_ultrasound() # initialize ultrasound 
+    init_OLED() # initialize oled display
+    init_7seg() # initialize 7 segment led
+    init_tmp36() # initialize the tmp36 temperature sensor
+    init_motor() # initialize the DC motor pins for power transistor
+
+
+}
+
+State1 [Oled on; Checking for people] ===> person less than 3 feet ==> State 2 [Oled asking for temp reading; wait for input] 
+
+    |=== Unhealthy ==> Dead state (Not allowed in & back to State 1)
+==> 
+    |=== Helthy ==> State 3 [7 segment + oled increment + display; DC motor opens door] ==> State 1
+
+
+                                                                                   
+void main() {
+    
+    int entry_distance = get_entry_distance();   // function for getting distance of person from entrance and exit
+    int exit_distance = get_exit_distance();
+
+    update_displays();   // display our capacity on OLED and 7 segment LED
+
+    if (entry_distance < 70 || exit_distance < 70 ){  // if disance less than 70 (3 feet away)
+
+        display_health_prompt();  // ask the user to grab the TMP36 sensor 
+        
+        if (exit_distance < 70){   // if someone is exiting, we give them preference 
+
+            open_door();
+        }
+
+        else{  // if someone is trying to enter
+
+            bool health = check_temp();
+
+            if (health == true){  // if healthy individual
+
+                increment_counter();
+                update_displays();
+            }
+        }
+
+    }
+
+}
