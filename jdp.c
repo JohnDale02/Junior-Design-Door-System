@@ -67,7 +67,7 @@ int main() {
                     display_health_prompt();  // ask the user to grab the TMP36 sensor 
 
                     int health = check_temp();
-
+                    
                     if (health == 1){  // if healthy individual
 
                         display_healthy_prompt();
@@ -76,16 +76,14 @@ int main() {
                         _delay_ms(4000);
 
                     }
+                        
                     else{  // if unhealthy individual
 
                         display_unhealthy_prompt();
                         _delay_ms(4000);
-
                     }
                 }
-
             }
-
         }
     }
 
